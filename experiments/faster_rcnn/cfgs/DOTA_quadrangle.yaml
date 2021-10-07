@@ -56,7 +56,7 @@ dataset:
   dataset_path: "./data/dota-split-outdata"
   image_set: train
 #  root_path: "/home/dj/data/"
-  root_path: "/data/dj/ODAI"
+  root_path: "./data"
   test_image_set: test
   proposal: rpn
 TRAIN:
