@@ -53,13 +53,13 @@ dataset:
   NUM_CLASSES: 16
   dataset: DOTA
 #  dataset_path: "/data/dj/dota/dota-split"
-  dataset_path: "/data/dj/ODAI/ODAI_test_split"
+  dataset_path: "./data/dota-split-outdata"
   # NUM_CLASSES: 16
   # dataset: DOTA
   # dataset_path: "/home/dj/data/DOTA-v3"
   image_set: train
 #  root_path: "/data/dj/dota"
-  root_path: "/data/dj/ODAI"
+  root_path: "./data"
   test_image_set: test
   proposal: rpn
 TRAIN:
