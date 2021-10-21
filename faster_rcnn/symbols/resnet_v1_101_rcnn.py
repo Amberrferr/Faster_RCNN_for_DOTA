@@ -6,7 +6,7 @@
 # Modified by Bin Xiao
 # --------------------------------------------------------
 
-import cPickle
+import pickle
 import mxnet as mx
 from utils.symbol import Symbol
 from operator_py.proposal import *
