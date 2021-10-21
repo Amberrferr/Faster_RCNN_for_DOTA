@@ -7,13 +7,13 @@
 # --------------------------------------------------------
 import cv2
 import random
-import cPickle
+import pickle
 import os
 import time
 import mxnet as mx
 import numpy as np
 
-from module import MutableModule
+from core.module import MutableModule
 from utils import image
 from bbox.bbox_transform import bbox_pred, clip_boxes, clip_quadrangle_boxes, bbox_pred_quadrangle
 from nms.nms import py_nms_wrapper, cpu_nms_wrapper, gpu_nms_wrapper
@@ -98,8 +98,8 @@ def generate_proposals(predictor, test_data, imdb, cfg, vis=False, thresh=0.):
             if vis:
                 vis_all_detection(data_dict['data'].asnumpy(), [dets], ['obj'], scale, cfg)
 
-            print 'generating %d/%d' % (idx + 1, imdb.num_images), 'proposal %d' % (dets.shape[0]), \
-                'data %.4fs net %.4fs' % (t1, t2 / test_data.batch_size)
+            print ('generating %d/%d' % (idx + 1, imdb.num_images), 'proposal %d' % (dets.shape[0]), \
+                'data %.4fs net %.4fs' % (t1, t2 / test_data.batch_size))
             idx += 1
 
 
@@ -119,7 +119,7 @@ def generate_proposals(predictor, test_data, imdb, cfg, vis=False, thresh=0.):
         with open(full_rpn_file, 'wb') as f:
             cPickle.dump(original_boxes, f, cPickle.HIGHEST_PROTOCOL)
 
-    print 'wrote rpn proposals to {}'.format(rpn_file)
+    print ('wrote rpn proposals to {}'.format(rpn_file))
     return imdb_boxes
 
 def im_detect(predictor, data_batch, data_names, scales, cfg):
@@ -273,7 +273,7 @@ def pred_eval_quadrangle(predictor, test_data, imdb, cfg, vis=False, draw=False,
                 path = os.path.join(cfg.TEST.save_img_path, str(idx) + '.jpg')
                 boxes_this_image = [[]] + [all_boxes[j][idx + delta] for j in range(1, imdb.num_classes)]
                 im = draw_all_quadrangle_detection(data_dict['data'].asnumpy(), boxes_this_image, imdb.classes, scales[delta], cfg, threshold=0.2)
-                print path
+                print (path)
                 cv2.imwrite(path, im)
 
         idx += test_data.batch_size
@@ -282,7 +282,7 @@ def pred_eval_quadrangle(predictor, test_data, imdb, cfg, vis=False, draw=False,
         data_time += t1
         net_time += t2
         post_time += t3
-        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size)
+        print ('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
         if logger:
             logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
 
@@ -379,7 +379,7 @@ def pred_eval_dota_quadrangle(predictor, test_data, imdb, cfg, vis=False, draw=F
                 path = os.path.join(cfg.TEST.save_img_path, str(idx) + '.jpg')
                 boxes_this_image = [[]] + [all_boxes[j][idx + delta] for j in range(1, imdb.num_classes)]
                 im = draw_all_quadrangle_detection(data_dict['data'].asnumpy(), boxes_this_image, imdb.classes, scales[delta], cfg, threshold=0.2)
-                print path
+                print (path)
                 cv2.imwrite(path, im)
 
         idx += test_data.batch_size
@@ -388,7 +388,7 @@ def pred_eval_dota_quadrangle(predictor, test_data, imdb, cfg, vis=False, draw=F
         data_time += t1
         net_time += t2
         post_time += t3
-        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size)
+        print ('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
         if logger:
             logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
 
@@ -484,7 +484,7 @@ def pred_eval_quadrangle_multiscale(prefix, predictor, test_data, imdb, cfg, vis
                 path = os.path.join(cfg.TEST.save_img_path, '{}_'.format(prefix) + str(idx) + '.jpg')
                 boxes_this_image = [[]] + [all_boxes[j][idx + delta] for j in range(1, imdb.num_classes)]
                 im = draw_all_quadrangle_detection(data_dict['data'].asnumpy(), boxes_this_image, imdb.classes, scales[delta], cfg, threshold=0.2)
-                print path
+                print (path)
                 cv2.imwrite(path, im)
 
         idx += test_data.batch_size
@@ -493,7 +493,7 @@ def pred_eval_quadrangle_multiscale(prefix, predictor, test_data, imdb, cfg, vis
         data_time += t1
         net_time += t2
         post_time += t3
-        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size)
+        print ('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
         if logger:
             logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
 
@@ -517,8 +517,8 @@ def pred_eval_quadrangle_multiscale(prefix, predictor, test_data, imdb, cfg, vis
                                                                int(dets[k, 4]), int(dets[k, 5]), int(dets[k, 6]),
                                                                int(dets[k, 7]), dets[k, 8]))
                     else:
-                        print 'A detected box is anti-clockwise! Index:{}'.format(index)
-                        print dets[k, 0:8]
+                        print ('A detected box is anti-clockwise! Index:{}'.format(index))
+                        print (dets[k, 0:8])
 
     with open(det_file, 'wb') as f:
         cPickle.dump(all_boxes, f, protocol=cPickle.HIGHEST_PROTOCOL)
@@ -603,7 +603,7 @@ def pred_eval(predictor, test_data, imdb, cfg, vis=False, thresh=1e-3, logger=No
         data_time += t1
         net_time += t2
         post_time += t3
-        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size)
+        print ('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
         if logger:
             logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
 
@@ -652,9 +652,9 @@ def pred_eval_dota(predictor, test_data, imdb, cfg, vis=False, thresh=1e-3, logg
     #    (x1, y1, x2, y2, score)
     all_boxes = [[[] for _ in range(num_images)]
                  for _ in range(imdb.num_classes)]
-    print len(all_boxes)
-    print len(all_boxes[0])
-    print len(all_boxes[0][0])
+    print (len(all_boxes))
+    print (len(all_boxes[0]))
+    print (len(all_boxes[0][0]))
 
     idx = 0
     data_time, net_time, post_time = 0.0, 0.0, 0.0
@@ -675,8 +675,8 @@ def pred_eval_dota(predictor, test_data, imdb, cfg, vis=False, thresh=1e-3, logg
                 cls_boxes = boxes[indexes, 4:8] if cfg.CLASS_AGNOSTIC else boxes[indexes, j * 4:(j + 1) * 4]
                 cls_dets = np.hstack((cls_boxes, cls_scores))
                 # keep = nms(cls_dets)
-                print j,idx,delta
-                print cls_dets.shape
+                print (j,idx,delta)
+                print (cls_dets.shape)
                 all_boxes[j][idx+delta] = cls_dets
 
             if max_per_image > 0:
@@ -698,7 +698,7 @@ def pred_eval_dota(predictor, test_data, imdb, cfg, vis=False, thresh=1e-3, logg
         data_time += t1
         net_time += t2
         post_time += t3
-        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size)
+        print ('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
         if logger:
             logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
 
