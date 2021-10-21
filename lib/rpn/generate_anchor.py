@@ -71,4 +71,4 @@ def _scale_enum(anchor, scales):
 
 if __name__ == '__main__':
     anchors = generate_anchors(scales=2 ** np.arange(2,6))
-    print anchors
+    print (anchors)
