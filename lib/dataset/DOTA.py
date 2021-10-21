@@ -13,11 +13,11 @@ function. Results are written as the Pascal VOC format. Evaluation is based on m
 criterion.
 """
 
-import cPickle
+import pickle
 import os
 import numpy as np
 
-from imdb import IMDB
+from dataset.imdb import IMDB
 import cv2
 import zipfile
 from bbox.bbox_transform import bbox_overlaps, bbox_transform, bbox_transform_quadrangle, bbox_pred_quadrangle
@@ -42,19 +42,15 @@ class DOTA(IMDB):
         self.data_path = data_path
 
         self.classes = ['__background__',  # always index 0
-                        'plane', 'baseball-diamond',
-                        'bridge', 'ground-track-field',
-                        'small-vehicle', 'large-vehicle',
-                        'ship', 'tennis-court',
-                        'basketball-court', 'storage-tank',
-                        'soccer-ball-field', 'roundabout',
-                        'harbor', 'swimming-pool',
-                        'helicopter']
+                        'plane', 'baseball-diamond', 'bridge', 'ground-track-field',
+                       'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+                       'basketball-court', 'storage-tank', 'soccer-ball-field', 'roundabout', 
+                       'harbor', 'swimming-pool', 'helicopter', 'container-crane']
         self.num_classes = len(self.classes)
         ## index changed to be basename
         self.image_set_index = self.load_image_set_index()
         self.num_images = len(self.image_set_index)
-        print 'num_images', self.num_images
+        print ('num_images', self.num_images)
         self.mask_size = mask_size
         self.binary_thresh = binary_thresh
 
@@ -98,13 +94,13 @@ class DOTA(IMDB):
         if os.path.exists(cache_file):
             with open(cache_file, 'rb') as fid:
                 roidb = cPickle.load(fid)
-            print '{} gt roidb loaded from {}'.format(self.name, cache_file)
+            print ('{} gt roidb loaded from {}'.format(self.name, cache_file))
             return roidb
 
         gt_roidb = [self.load_annotation(index) for index in self.image_set_index]
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
-        print 'wrote gt roidb to {}'.format(cache_file)
+        print ('wrote gt roidb to {}'.format(cache_file))
 
         return gt_roidb
 
@@ -190,7 +186,7 @@ class DOTA(IMDB):
         """
         path = os.path.join(self.result_path, 'test_results')
         if os.path.isdir(path):
-            print "delete original test results files!"
+            print ("delete original test results files!")
             os.system("rm -r {}".format(path))
             os.mkdir(path)
         for cls_ind, cls in enumerate(self.classes):
@@ -231,18 +227,14 @@ class DOTA_oriented(IMDB):
         self.data_path = data_path
 
         self.classes = ['__background__',  # always index 0
-                        'plane', 'baseball-diamond',
-                        'bridge', 'ground-track-field',
-                        'small-vehicle', 'large-vehicle',
-                        'ship', 'tennis-court',
-                        'basketball-court', 'storage-tank',
-                        'soccer-ball-field', 'roundabout',
-                        'harbor', 'swimming-pool',
-                        'helicopter']
+                        'plane', 'baseball-diamond', 'bridge', 'ground-track-field',
+                       'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+                       'basketball-court', 'storage-tank', 'soccer-ball-field', 'roundabout', 
+                       'harbor', 'swimming-pool', 'helicopter', 'container-crane']
         self.num_classes = len(self.classes)
         self.image_set_index = self.load_image_set_index()
         self.num_images = len(self.image_set_index)
-        print 'num_images', self.num_images
+        print ('num_images', self.num_images)
         self.mask_size = mask_size
         self.binary_thresh = binary_thresh
 
@@ -284,14 +276,14 @@ class DOTA_oriented(IMDB):
         cache_file = os.path.join(self.cache_path, self.name + '_gt_roidb.pkl')
         if os.path.exists(cache_file):
             with open(cache_file, 'rb') as fid:
-                roidb = cPickle.load(fid)
-            print '{} gt roidb loaded from {}'.format(self.name, cache_file)
+                roidb = pickle.load(fid)
+            print ('{} gt roidb loaded from {}'.format(self.name, cache_file))
             return roidb
 
         gt_roidb = [self.load_annotation(index) for index in self.image_set_index]
         with open(cache_file, 'wb') as fid:
-            cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
-        print 'wrote gt roidb to {}'.format(cache_file)
+            pickle.dump(gt_roidb, fid, pickle.HIGHEST_PROTOCOL)
+        print ('wrote gt roidb to {}'.format(cache_file))
 
         return gt_roidb
 
@@ -424,9 +416,9 @@ class DOTA_oriented(IMDB):
                 xmax = max(bbox[0], bbox[2], bbox[4], bbox[6])
                 ymax = max(bbox[1], bbox[3], bbox[5], bbox[7])
                 if xmax > img_width:
-                    print "extreme xmax", xmax
+                    print ("extreme xmax", xmax)
                 if ymax > img_height:
-                    print "extreme ymax", ymax
+                    print ("extreme ymax", ymax)
                 for i in range(3):
                     cv2.line(img, (bbox[i * 2], bbox[i * 2 + 1]), (bbox[(i + 1) * 2], bbox[(i + 1) * 2 + 1]),
                              color=color, thickness=1)
@@ -447,7 +439,7 @@ class DOTA_oriented(IMDB):
                 cv2.line(img, (bbox[6], bbox[7]), (bbox[0], bbox[1]), color=color, thickness=1)
                 cv2.putText(img, '{} {}'.format(cls, score), (bbox[0], bbox[1] + 10),
                             color=(255, 255, 255), fontFace=cv2.FONT_HERSHEY_COMPLEX, fontScale=0.5)
-            print os.path.join(det_folder, os.path.basename(index))
+            print (os.path.join(det_folder, os.path.basename(index)))
             cv2.imwrite(os.path.join(det_folder, os.path.basename(index)), img)
 
     # def write_results_by_class(self, all_boxes, threshold=0.1):
@@ -517,7 +509,7 @@ class DOTA_oriented(IMDB):
         """
         path = os.path.join(self.result_path, 'test_results')
         if os.path.isdir(path):
-            print "delete original test results files!"
+            print ("delete original test results files!")
             os.system("rm -r {}".format(path))
             os.mkdir(path)
         for cls_ind, cls in enumerate(self.classes):
@@ -528,8 +520,8 @@ class DOTA_oriented(IMDB):
                 try:
                     dets = all_boxes[cls_ind][im_ind]
                 except:
-                    print 'cls_ind:', cls_ind
-                    print 'im_ind:', im_ind
+                    print ('cls_ind:', cls_ind)
+                    print ('im_ind:', im_ind)
                     return
                 else:
                     # if dets.shape[0] == 0:
@@ -550,5 +542,5 @@ class DOTA_oriented(IMDB):
                                                                          int(dets[k, 7]), dets[k, 8],
                                                                          self.classes[cls_ind]))
                         else:
-                           print 'A detected box is anti-clockwise! Index:{}'.format(index)
-                           print dets[k, 0:8]
+                           print ('A detected box is anti-clockwise! Index:{}'.format(index))
+                           print (dets[k, 0:8])
